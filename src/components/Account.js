@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { useContext } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useContext, useState, useEffect } from 'react';
 
 import UserContext from '../context/UserContext';
 import sair from '../assets/sair.svg';
@@ -7,7 +9,26 @@ import entrada from '../assets/entrada.svg';
 import saida from '../assets/saida.svg';
 
 export default function Account() {
+    const navigate = useNavigate();
+    const [userBalance, setUserBalance] = useState([]);
     const {user: {name, token}} = useContext(UserContext);
+    useEffect(() => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+        const URL = 'http://localhost:5000/account';
+        const promise = axios.get(URL, config);
+        promise.then(response => {
+            console.log(response.data);
+            setUserBalance(response.data);
+        });
+        promise.catch(error => {
+            console.log(error);
+        });
+    }, []);
+    console.log(userBalance.length);
     return (
         <Div>  
             <Header>
@@ -15,14 +36,27 @@ export default function Account() {
                 <img src={sair} alt="sair" />
             </Header>
             <Main>
-                <h2>Não há registros de entrada ou saída</h2>
+                {userBalance.length === 0 ? (
+                    <h2>Não há registros de <br></br> entrada ou saída</h2>
+                ) : (
+                    <>{userBalance.map(({ date, description, value, type }) => {
+                        return (
+                            <h4>
+                                <p className='date'>{date}</p>
+                                <p className='description'>{description}</p>
+                                <p className={type === 'income' ? 'value green' : 'value red'}>{value}</p>
+                            </h4>
+                        )
+                    })}
+                    </>
+                )}
             </Main>
             <Footer>
-                <div>
+                <div onClick={() => navigate('/income')}>
                     <img src={entrada} alt="entrada" />
                     <h3>Nova <br></br> entrada</h3>
                 </div>
-                <div>
+                <div onClick={() => navigate('/outcome')}>
                     <img src={saida} alt="saida" />
                     <h3>Nova <br></br> saída</h3>
                 </div>
@@ -59,6 +93,37 @@ const Main = styled.div`
     background-color: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 12px;
+    h2 {
+        font-family: 'Raleway';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 23px;
+        text-align: center;
+        color: #868686;
+    }
+    h4 {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        color: #000000;
+    }
+    .green {
+        color: #03AC00;
+    }
+    .red {
+        color: #C70000;
+    }
+    p.date {
+        color: #C6C6C6;
+    }
 `;
 const Footer = styled.div`
     display: grid; 

@@ -8,6 +8,8 @@ import '../style/style.css';
 import Login from './Login';
 import Signup from './Signup';
 import Account from './Account';
+import Income from "./Income";
+import Outcome from "./Outcome";
 import UserContext from '../context/UserContext';
 
 export default function App() {
@@ -19,6 +21,8 @@ export default function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/sign-up" element={<Signup />} />
                     <Route path="/account" element={<Account />} />
+                    <Route path="/income" element={<Income />} />
+                    <Route path="/outcome" element={<Outcome />} />
                 </Routes>
             </BrowserRouter>
         </UserContext.Provider>
