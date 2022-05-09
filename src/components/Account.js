@@ -12,6 +12,7 @@ export default function Account() {
     const navigate = useNavigate();
     const [userBalance, setUserBalance] = useState([]);
     const {user: {name, token}} = useContext(UserContext);
+    let balance = 0;
     useEffect(() => {
         const config = {
             headers: {
@@ -40,14 +41,26 @@ export default function Account() {
                     <h2>Não há registros de <br></br> entrada ou saída</h2>
                 ) : (
                     <>{userBalance.map(({ date, description, value, type }) => {
+                        if (type === 'income') {
+                            balance += parseFloat(value);
+                        } else {
+                            balance -= parseFloat(value);
+                        }
+                        console.log(balance.toFixed(2));
                         return (
-                            <h4>
-                                <p className='date'>{date}</p>
-                                <p className='description'>{description}</p>
-                                <p className={type === 'income' ? 'value green' : 'value red'}>{value}</p>
-                            </h4>
+                            <>
+                                <h4>
+                                    <p className='date'>{date}</p>
+                                    <p className='description'>{description}</p>
+                                    <p className={type === 'income' ? 'value green' : 'value red'}>{value}</p>
+                                </h4>
+                            </>
                         )
                     })}
+                        <div className='balance'>
+                            <p>SALDO</p>
+                            <p className={balance < 0 ? 'red' : 'green'}>{balance.toFixed(2)}</p>
+                        </div>
                     </>
                 )}
             </Main>
@@ -98,6 +111,7 @@ const Main = styled.div`
     justify-content: center;
     box-sizing: border-box;
     padding: 12px;
+    position: relative;
     h2 {
         font-family: 'Raleway';
         font-style: normal;
@@ -115,14 +129,27 @@ const Main = styled.div`
         line-height: 19px;
         color: #000000;
     }
-    .green {
+    .green, p.green{
         color: #03AC00;
     }
-    .red {
+    .red, p.red{
         color: #C70000;
     }
     p.date {
         color: #C6C6C6;
+    }
+    .balance {
+        width: 92%;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        bottom: 10px;
+        left: 15px;
+    }
+    .balance p {
+        font-weight: 700;
+        font-size: 17px;
+        line-height: 20px;
     }
 `;
 const Footer = styled.div`
