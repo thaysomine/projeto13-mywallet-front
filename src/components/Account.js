@@ -30,13 +30,32 @@ export default function Account() {
         });
     }, []);
     console.log(userBalance.length);
+    const main = userBalance.length;
+    
+    function handleLogout() {
+        localStorage.removeItem('token');
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const URL = 'http://localhost:5000/logout';
+        const promise = axios.delete(URL, config);
+        promise.then(response => {
+            console.log(response.data);
+            navigate('/');
+        });
+        promise.catch(error => {
+            console.log(error);
+        });
+    }
     return (
         <Div>  
             <Header>
                 <h1>Olá, {name}</h1>
-                <img src={sair} alt="sair" />
+                <img src={sair} alt="sair" onClick={handleLogout}/>
             </Header>
-            <Main>
+            <Main wrap={main}>
                 {userBalance.length === 0 ? (
                     <h2>Não há registros de <br></br> entrada ou saída</h2>
                 ) : (
@@ -108,7 +127,7 @@ const Main = styled.div`
     margin-bottom: 13px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: ${props => props.wrap === 0 ? 'center' : 'flex-start'};
     box-sizing: border-box;
     padding: 12px;
     position: relative;
