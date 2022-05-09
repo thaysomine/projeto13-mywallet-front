@@ -1,15 +1,58 @@
 import styled from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import axios from 'axios';
 
 export default function Signup() {
+    const navigate = useNavigate();
+    const [signup, setSignup] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+
+    async function handleSignup(e) {
+        e.preventDefault();
+        const URL = 'http://localhost:5000/sign-up';
+
+        try {
+            const response = await axios.post(URL, signup);
+            console.log(response);
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <Div>
         <h1>MyWallet</h1>
-        <form>
-            <input type="text" placeholder="Nome" />
-            <input type="text" placeholder="E-mail" />
-            <input type="password" placeholder="Senha" />
-            <input type="password" placeholder="Confirme a senha" />
+        <form onSubmit={handleSignup}>
+            <input 
+                type="text" 
+                placeholder="Nome" 
+                required
+                onChange={(name) => setSignup({...signup, name:name.target.value})}
+            />
+            <input 
+                type="text" 
+                placeholder="E-mail"
+                required
+                onChange={(email) => setSignup({...signup, email:email.target.value})} 
+            />
+            <input 
+                type="password" 
+                placeholder="Senha"
+                required
+                onChange={(password) => setSignup({...signup, password:password.target.value})}  
+            />
+            <input 
+                type="password"
+                placeholder="Confirme a senha"
+                required
+                onChange={(confirmPassword) => setSignup({...signup, confirmPassword:confirmPassword.target.value})} 
+            />
             <button type="submit">Cadastrar</button>
         </form>
         <Link to="/">

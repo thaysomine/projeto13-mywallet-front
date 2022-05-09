@@ -1,13 +1,47 @@
 import styled from 'styled-components';
+import axios from 'axios';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import UserContext from '../context/UserContext';
 
 export default function Login() {
+    const navigate = useNavigate();
+    const { user, setUser } = useContext(UserContext);
+    const [login, setLogin] = useState({email:"", password:""});
+
+    console.log(user);
+    console.log(login);
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const URL = 'http://localhost:5000/sign-in';
+        
+        try {
+            const response = await axios.post(URL, login);
+            console.log(response);
+            setUser(response.data);
+            navigate('/account');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <Div>
             <h1>MyWallet</h1>
-            <form>
-                <input type="text" placeholder="E-mail" />
-                <input type="password" placeholder="Senha" />
+            <form onSubmit={handleLogin}>
+                <input 
+                    type="text" 
+                    placeholder="E-mail" 
+                    required 
+                    onChange={(email) => setLogin({...login, email:email.target.value})}
+                />
+                <input 
+                    type="password" 
+                    placeholder="Senha"
+                    required 
+                    onChange={(password) => setLogin({...login, password:password.target.value})} 
+                />
                 <button type="submit">Entrar</button>
             </form>
             <Link to="/sign-up">
