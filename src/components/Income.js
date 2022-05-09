@@ -35,7 +35,7 @@ export default function Income() {
                     type="text" 
                     placeholder="Valor"
                     required
-                    onChange={(value) => setIncome({...income, value:value.target.value})}
+                    onChange={(value) => setIncome({...income, value:parseFloat(value.target.value.replace(',','.'))})}
                 />
                 <input 
                     type="text"

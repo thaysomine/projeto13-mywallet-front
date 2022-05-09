@@ -31,7 +31,7 @@ export default function Account() {
     }, []);
     console.log(userBalance.length);
     const main = userBalance.length;
-    
+
     function handleLogout() {
         localStorage.removeItem('token');
         const config = {
@@ -66,19 +66,20 @@ export default function Account() {
                             balance -= parseFloat(value);
                         }
                         console.log(balance.toFixed(2));
+                        const newValue = parseFloat(value).toFixed(2);
                         return (
                             <>
                                 <h4>
                                     <p className='date'>{date}</p>
                                     <p className='description'>{description}</p>
-                                    <p className={type === 'income' ? 'value green' : 'value red'}>{value}</p>
+                                    <p className={type === 'income' ? 'value green' : 'value red'}>{newValue}</p>
                                 </h4>
                             </>
                         )
                     })}
                         <div className='balance'>
                             <p>SALDO</p>
-                            <p className={balance < 0 ? 'red' : 'green'}>{balance.toFixed(2)}</p>
+                            <p className={balance < 0 ? 'value red' : 'value green'}>{balance.toFixed(2)}</p>
                         </div>
                     </>
                 )}
@@ -142,10 +143,10 @@ const Main = styled.div`
     }
     h4 {
         display: flex;
-        justify-content: space-between;
         font-weight: 400;
         font-size: 16px;
         line-height: 19px;
+        margin-bottom: 15px;
         color: #000000;
     }
     .green, p.green{
@@ -156,6 +157,13 @@ const Main = styled.div`
     }
     p.date {
         color: #C6C6C6;
+    }
+    p.description {
+        margin-left: 10px;
+    }
+    p.value {
+        width: 100%;
+        text-align: right;
     }
     .balance {
         width: 92%;
